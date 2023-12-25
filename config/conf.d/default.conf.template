@@ -22,8 +22,8 @@ server {
     # security
     include     /etc/nginx/config.io/security.conf;
 
-    access_log  /logs/$domain_name/access.log;
-    error_log   /logs/$domain_name/error.log warn;
+    access_log  /logs/$domain_name-access.log;
+    error_log   /logs/$domain_name-error.log warn;
 
     location / {
         proxy_set_header    Host    $host;
