@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  web:
+  nginx:
     image: nginx:1.25.3-alpine3.18-slim
     container_name: nginx_con
     restart: always
