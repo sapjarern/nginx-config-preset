@@ -1,0 +1,50 @@
+upstream frontend {
+    # replace $URL with target url ex. localhost:3000
+    server  $URL;
+}
+
+upstream backend {
+    # replace $URL with target url ex. localhost:8000
+    server  $URL;
+}
+
+server {
+    listen  443 ssl;
+    listen  [::]:443 ssl;
+    http2   on;
+
+    # replace $domain_name with target url ex. demo.example.com
+    server_name $domain_name;
+
+    ssl_certificate     /ssl/$domain_name/fullchain.pem;
+    ssl_certificate_key /ssl/$domain_name/$domain_name.key;
+
+    # security
+    include     /etc/nginx/config.io/security.conf;
+
+    access_log  /logs/$domain_name/access.log;
+    error_log   /logs/$domain_name/error.log warn;
+
+    location / {
+        proxy_set_header    Host    $host;
+        proxy_pass          http://frontend;
+    }
+
+    location /api/ {
+        proxy_set_header    Host    $host;
+        include             /etc/nginx/config.io/proxy.conf;
+        proxy_pass          http://backend;
+    }
+    
+    # additional config
+    include     /etc/nginx/config.io/general.conf;
+}
+
+server {
+    listen  80;
+    listen  [::]:80;
+
+    server_name $domain_name;
+
+    return  301 https://$domain_name$request_uri;
+}
