@@ -1,13 +1,14 @@
 #! /bin/bash
 
-if [ "$#" -ne 1 ]
+if [ "$#" -ne 2 ]
 then
-  echo "Error: No domain name argument provided"
-  echo "Usage: Provide a domain name as an argument"
+  echo "Error: No domain name and organization name arguments provided"
+  echo "Usage: Provide a domain name and organization name as an arguments"
   exit 1
 fi
 
 DOMAIN=$1
+ORGANIZATION=$2
 
 if [ ! -d $DOMAIN ]
 then
@@ -20,7 +21,7 @@ openssl req -x509 \
             -sha256 -days 356 \
             -nodes \
             -newkey rsa:2048 \
-            -subj "/CN=${DOMAIN}/C=US/L=San Fransisco" \
+            -subj "/CN=${ORGANIZATION}/C=US/L=San Fransisco" \
             -keyout ./${DOMAIN}/rootCA.key -out ./${DOMAIN}/rootCA.crt 
 
 # Generate Private key 
@@ -41,8 +42,8 @@ distinguished_name = dn
 C = US
 ST = California
 L = San Fransisco
-O = MLopsHub
-OU = MlopsHub Dev
+O = ${ORGANIZATION}
+OU = Develop
 CN = ${DOMAIN}
 
 [ req_ext ]
