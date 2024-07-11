@@ -8,13 +8,16 @@
 ### Config HTTPS
 #### self-sign certificate
 1. `cd ssl`
-2. run `./gen_ssl.sh domain_name` for generate self -sign ceritificate
-3. run `openssl dhparam -out dhparam.pem 2048`
+2. run `./gen_root.sh org_name` for generate root CA
+3. run `./gen_cert.sh org_name domain_name` for generate self-sign certificate
+4. run `openssl dhparam -out dhparam.pem 2048`
+5. update certificate path in nginx config 
 
 #### CA certificate
 1. `cd ssl`
 2. copy exist certificate to `ssl/domain_name`
 3. run `openssl dhparam -out dhparam.pem 2048`
+4. update certificate path in nginx config 
 
 
 
