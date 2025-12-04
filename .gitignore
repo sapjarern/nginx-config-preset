@@ -2,7 +2,7 @@
 *.pem
 *.key
 *.csr
-*.conf
-*.srl
+ssl/**/*.conf
+ssl/**/*.srl
 
 logs
