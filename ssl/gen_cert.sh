@@ -19,6 +19,9 @@ then
     exit 1
 fi
 
+# Replace * with _ for file system paths
+DOMAIN_SAFE=$(echo "$DOMAIN" | sed 's/\*/_/g')
+
 CA_DIR="./root_ca/${ORG}"
 
 if [ ! -d $CA_DIR ]
@@ -33,7 +36,7 @@ then
     fi
 fi
 
-OUTPUT_DIR="./cert/${ORG}/${DOMAIN}"
+OUTPUT_DIR="./cert/${ORG}/${DOMAIN_SAFE}"
 
 if [ ! -d $OUTPUT_DIR ]
 then
@@ -42,7 +45,7 @@ fi
 
 
 # Generate Private key 
-openssl genrsa -out ${OUTPUT_DIR}/${DOMAIN}.key 2048
+openssl genrsa -out ${OUTPUT_DIR}/${DOMAIN_SAFE}.key 2048
 
 # Create csf conf
 cat > ${OUTPUT_DIR}/csr.conf <<EOF
@@ -72,7 +75,7 @@ EOF
 
 
 # create CSR request using private key
-openssl req -new -key ${OUTPUT_DIR}/${DOMAIN}.key -out ${OUTPUT_DIR}/${DOMAIN}.csr -config ${OUTPUT_DIR}/csr.conf
+openssl req -new -key ${OUTPUT_DIR}/${DOMAIN_SAFE}.key -out ${OUTPUT_DIR}/${DOMAIN_SAFE}.csr -config ${OUTPUT_DIR}/csr.conf
 
 # Create a external config file for the certificate
 cat > ${OUTPUT_DIR}/cert.conf <<EOF
@@ -89,10 +92,10 @@ EOF
 
 # Create SSl with self signed CA
 openssl x509 -req \
-    -in ${OUTPUT_DIR}/${DOMAIN}.csr \
+    -in ${OUTPUT_DIR}/${DOMAIN_SAFE}.csr \
     -CA ${CA_DIR}/rootCA.crt -CAkey ${CA_DIR}/rootCA.key \
-    -CAcreateserial -out ${OUTPUT_DIR}/${DOMAIN}.crt \
-    -days 365 \
+    -CAcreateserial -out ${OUTPUT_DIR}/${DOMAIN_SAFE}.crt \
+    -days 3650 \
     -sha256 -extfile ${OUTPUT_DIR}/cert.conf
 
-cat ${OUTPUT_DIR}/${DOMAIN}.crt ${CA_DIR}/rootCA.crt > ${OUTPUT_DIR}/fullchain.pem
+cat ${OUTPUT_DIR}/${DOMAIN_SAFE}.crt ${CA_DIR}/rootCA.crt > ${OUTPUT_DIR}/fullchain.pem

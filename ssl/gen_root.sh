@@ -26,7 +26,7 @@ then
 fi
 
 openssl req -x509 \
-            -sha256 -days 356 \
+            -sha256 -days 3560 \
             -nodes \
             -newkey rsa:2048 \
             -subj "/CN=${ORG}/C=US/L=San Fransisco" \
